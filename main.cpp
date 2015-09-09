@@ -14,10 +14,6 @@ int main(int argc, char *argv[]) {
 
     renderer = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
 
-    bitmapSurface = SDL_LoadBMP("img/hello.bmp");
-    bitmapTex = SDL_CreateTextureFromSurface(renderer, bitmapSurface);
-    SDL_FreeSurface(bitmapSurface);
-
     while (!quit)
     {
         SDL_Event event;
