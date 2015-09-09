@@ -19,10 +19,10 @@ int main(int argc, char *argv[]) {
         SDL_Event event;
         if (SDL_PollEvent(&event)) 
         {
-           /* if(event.type == SDL_KEYDOWN)
+            if(event.type == SDL_KEYDOWN)
                 quit=true;
             if(event.type == SDL_KEYUP)
-                quit=true;*/
+                quit=true;
             if (event.type == SDL_QUIT) {
                 break;
             }
