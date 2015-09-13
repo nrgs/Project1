@@ -1,42 +1,52 @@
+
 #include "SDL.h"
+#include <SDL_image.h>
+int main(int argc, char* argv[])
+{
+    SDL_Surface *screen = NULL;
+    SDL_Window *window = NULL;
+    SDL_Surface *image = NULL;
 
-int main(int argc, char *argv[]) {
-    SDL_Window *win = NULL;
-    SDL_Renderer *renderer = NULL;
-    SDL_Texture *bitmapTex = NULL;
-    SDL_Surface *bitmapSurface = NULL;
-    int posX = 100, posY = 100, width = 640, height = 480;
+    SDL_Init(SDL_INIT_VIDEO); 
 
+    // create the window 
+    window = SDL_CreateWindow("Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, 0);
+
+    /*Do we need to crate renderer?*/
+
+    screen = SDL_GetWindowSurface(window);
     bool quit = false;
-    SDL_Init(SDL_INIT_VIDEO);
 
-    win = SDL_CreateWindow("Awesome Game", posX, posY, width, height, 0);
-
-    renderer = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
-
-    while (!quit)
+    if(window != NULL)
     {
+        image = IMG_Load("emoji11.png"); // loads image
         SDL_Event event;
-        if (SDL_PollEvent(&event)) 
+        while(!quit)
         {
-            if(event.type == SDL_KEYDOWN)
-                quit=true;
-            if(event.type == SDL_KEYUP)
-                quit=true;
-            if (event.type == SDL_QUIT) {
-                break;
+            
+            if(SDL_PollEvent(&event))
+            {
+                if(event.type == SDL_QUIT)
+                {
+                    quit = true;
+                }
+                if(event.type == SDL_KEYDOWN)
+                {
+                    //code to handle movements
+                }
+                if(event.type == SDL_KEYUP)
+                {
+                    //code to handle movements 
+                } 
             }
+            
+        
+            SDL_BlitSurface(image, NULL, screen, NULL); 
+            SDL_UpdateWindowSurface(window);
         }
-
-        SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, bitmapTex, NULL, NULL);
-        SDL_RenderPresent(renderer);
     }
-
-    SDL_DestroyTexture(bitmapTex);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(win);
+    SDL_DestroyWindow(window);
     SDL_Quit();
-
     return 0;
 }
+
