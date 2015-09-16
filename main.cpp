@@ -6,6 +6,7 @@ int main(int argc, char* argv[])
     SDL_Surface *screen = NULL;
     SDL_Window *window = NULL;
     SDL_Surface *image = NULL;
+    SDL_Rect rect;
 
     SDL_Init(SDL_INIT_VIDEO); 
 
@@ -16,6 +17,10 @@ int main(int argc, char* argv[])
 
     screen = SDL_GetWindowSurface(window);
     bool quit = false;
+    int positionX = 100;
+    int positionY = 200;
+    
+    
 
     if(window != NULL)
     {
@@ -23,7 +28,8 @@ int main(int argc, char* argv[])
         SDL_Event event;
         while(!quit)
         {
-            
+            rect.x = positionX; 
+            rect.y = positionY;
             if(SDL_PollEvent(&event))
             {
                 if(event.type == SDL_QUIT)
@@ -32,18 +38,23 @@ int main(int argc, char* argv[])
                 }
                 if(event.type == SDL_KEYDOWN)
                 {
-                    //code to handle movements
+                    positionY -= 10;
                 }
                 if(event.type == SDL_KEYUP)
                 {
-                    //code to handle movements 
+                    positionY +=10;
                 } 
+
             }
             
-        
-            SDL_BlitSurface(image, NULL, screen, NULL); 
-            SDL_UpdateWindowSurface(window);
+            
+
+            SDL_BlitSurface(image, NULL, screen, &rect); 
+         SDL_UpdateWindowSurface(window);
+            
+           
         }
+
     }
     SDL_DestroyWindow(window);
     SDL_Quit();
