@@ -6,7 +6,8 @@ int main(int argc, char* argv[])
 {
     SDL_Surface *screen = NULL;
     SDL_Window *window = NULL;
-    SDL_Surface *image = NULL;
+    SDL_Surface *shipImage = NULL;
+    SDL_Surface *backgroundImage = NULL;
     SDL_Rect rect;
 
     SDL_Init(SDL_INIT_VIDEO); 
@@ -18,17 +19,17 @@ int main(int argc, char* argv[])
 
     screen = SDL_GetWindowSurface(window);
     bool quit = false;
-    int positionX = 100;
+
+    /* set sprite position */
+    int positionX = 200;
     int positionY = 200;
     rect.x = positionX;
     rect.y = positionY;
     if(window != NULL)
     {
-        image = IMG_Load("emoji11.png"); // loads image
+        backgroundImage = IMG_Load("background.png"); //Load Background
+        shipImage = IMG_Load("unicorn2.png"); // loads image
        
-        /* set sprite position */
-       
-
         SDL_Event event;
         while(!quit)
         {
@@ -41,16 +42,19 @@ int main(int argc, char* argv[])
                 }
                 if(event.type == SDL_KEYDOWN)
                 {
-                    positionY-=10;
+                    positionY -= 10;
                 }
                 if(event.type == SDL_KEYUP)
                 {
                     positionY += 10;
-                } 
+                }
             }
+
+
             
         
-            SDL_BlitSurface(image, NULL, screen, &rect); 
+            SDL_BlitSurface(backgroundImage, NULL, screen, NULL); 
+            SDL_BlitSurface(shipImage, NULL, screen, &rect); 
             SDL_UpdateWindowSurface(window);
         }
     }
