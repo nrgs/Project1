@@ -1,12 +1,17 @@
 
 #include "SDL.h"
 #include <SDL_image.h>
+
 int main(int argc, char* argv[])
 {
     SDL_Surface *screen = NULL;
     SDL_Window *window = NULL;
     SDL_Surface *image = NULL;
+<<<<<<< HEAD
     SDL_Rect rect;
+=======
+   
+>>>>>>> 874ffe4a16c43ef36e21d72cd03c5ac08185b3cd
 
     SDL_Init(SDL_INIT_VIDEO); 
 
@@ -25,6 +30,10 @@ int main(int argc, char* argv[])
     if(window != NULL)
     {
         image = IMG_Load("emoji11.png"); // loads image
+       
+        /* set sprite position */
+       
+
         SDL_Event event;
         while(!quit)
         {
