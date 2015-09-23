@@ -8,10 +8,6 @@ int main(int argc, char* argv[])
 {
     SDL_Surface *screen = NULL;
     SDL_Window *window = NULL;
-    SDL_Surface *image = NULL;
-    SDL_Rect rect;
-   
-
     SDL_Surface *shipImage = NULL;
     SDL_Surface *backgroundImage = NULL;
     SDL_Rect rect;
@@ -26,10 +22,6 @@ int main(int argc, char* argv[])
 
     screen = SDL_GetWindowSurface(window);
     bool quit = false;
-    int positionX = 100;
-    int positionY = 200;
-    
-    
 
     /* set sprite position */
     rect.x = 200;
@@ -44,28 +36,12 @@ int main(int argc, char* argv[])
         SDL_Event event;
         while(!quit)
         {
-            rect.x = positionX; 
-            rect.y = positionY;
-            if(SDL_PollEvent(&event))
-
             
             while(SDL_PollEvent(&event) != 0)
             {
                 //User requests quit
                 switch(event.type)
                 {
-
-                    quit = true;
-                }
-                if(event.type == SDL_KEYDOWN)
-                {
-                    positionY -= 10;
-                }
-                if(event.type == SDL_KEYUP)
-                {
-                    positionY +=10;
-                } 
-
                     case SDL_QUIT:
                             quit = true;
                             break;
@@ -90,7 +66,6 @@ int main(int argc, char* argv[])
                 //     rect.y -= 10;
                 // }
 
-
             }
 
             //Clear screen
@@ -100,15 +75,6 @@ int main(int argc, char* argv[])
             SDL_BlitSurface(backgroundImage, NULL, screen, NULL); 
             SDL_BlitSurface(shipImage, NULL, screen, &rect); 
             
-            
-
-            SDL_BlitSurface(image, NULL, screen, &rect); 
-         SDL_UpdateWindowSurface(window);
-            
-           
-        }
-
-
             //Update screen
             //SDL_RenderPresent(renderer);
             //Update the surface
