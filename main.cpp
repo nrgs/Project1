@@ -36,37 +36,32 @@ int main(int argc, char* argv[])
         SDL_Event event;
         while(!quit)
         {
-            
-            while(SDL_PollEvent(&event) != 0)
+             if(SDL_PollEvent(&event) != 0)
             {
-                //User requests quit
-                switch(event.type)
+               
+                if(event.type == SDL_QUIT)
                 {
-                    case SDL_QUIT:
-                            quit = true;
-                            break;
-
-                    case SDL_KEYDOWN:
-                            rect.y -= 10;
-                            break;
-                    case SDL_KEYUP:
-                            rect.y += 10;
-                            break;       
+                    quit = true;
                 }
-                // if(event.type == SDL_QUIT)
-                // {
-                //     quit = true;
-                // }
-                // else if(event.type == SDL_KEYDOWN)
-                // {
-                //     rect.y += 10;
-                // }
-                // else if(event.type == SDL_KEYUP)
-                // {
-                //     rect.y -= 10;
-                // }
+                if(event.key.keysym.sym  == SDLK_DOWN)
+                {
+                    rect.y += 10;
+                }
+                if(event.key.keysym.sym  == SDLK_UP)
+                {
+                    rect.y -= 10;
+                }
+                if(event.key.keysym.sym  == SDLK_RIGHT)
+                {
+                    rect.x += 10;
+                }
+                if(event.key.keysym.sym  == SDLK_LEFT)
+                {
+                    rect.x -= 10;
+                }
 
             }
+           
 
             //Clear screen
            // SDL_RenderClear(renderer);
