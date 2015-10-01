@@ -5,6 +5,7 @@
 #include <string>
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
 
 
 //function to load image of any format
@@ -98,12 +99,11 @@ int main(int argc, char* argv[])
         
         }
        
-       
+       //lame labyrinth 
         blankCellpositionTop = rand()% + 6;
         blankCellpositionBottom = blankCellpositionTop + 10;
 
-        
-        
+             
 
     }
     
@@ -140,38 +140,51 @@ int main(int argc, char* argv[])
 
                 if(key[SDL_SCANCODE_LEFT])
                 {
-                    unicorn.xSpeed = -1;
-                    unicorn.rect.x += unicorn.xSpeed * timeSinceLastLoop / game_speed;
+                    unicorn.rect.x -=10;
                 }
                  if(key[SDL_SCANCODE_RIGHT])
                 {
-                    unicorn.xSpeed = 1;
-                    unicorn.rect.x += unicorn.xSpeed * timeSinceLastLoop / game_speed;
+                    unicorn.rect.x += 10;
                 }
                  if(key[SDL_SCANCODE_UP])
                 {
-                    unicorn.ySpeed = -1;
-                    unicorn.rect.y += unicorn.ySpeed * timeSinceLastLoop/game_speed;
+                    unicorn.rect.y -= 10;
                 }
                  if(key[SDL_SCANCODE_DOWN])
                 {   
-                    unicorn.ySpeed = 1;
-                    unicorn.rect.y += unicorn.ySpeed * timeSinceLastLoop /game_speed;
+                    unicorn.rect.y += 10;
                 }
 
             }
 
-           //Move background
+           //Move background with David's help
             for (int i = 0; i < CELL_WIDTH; i++)
             {
+               
                 for (int j = 0; j < CELL_HEIGHT; j++)
                 {
-                    labirint[i][j].rect.x -= std::abs(unicorn.xSpeed) * timeSinceLastLoop/game_speed;
+                    labirint[i][j].rect.x -= timeSinceLastLoop/game_speed;
                 }
             }
 
+            int rightMostColumn = labirint[0][0].rect.x;
+            for (int i = 1; i < CELL_WIDTH; ++i)
+            {
+                if (labirint[i][0].rect.x + CELL_WIDTH > rightMostColumn)
+                    rightMostColumn = labirint[i][0].rect.x + CELL_WIDTH;
+            }
+        
+            for (int i = 0; i <CELL_WIDTH; ++i)
+            {
+                if (labirint[i][0].rect.x < 0)
+                {
+                    for (int j = 0; j < CELL_HEIGHT; ++j)
+                    {
 
-
+                         labirint[i][j].rect.x = rightMostColumn;
+                     }
+                }
+            }
 
 
 
