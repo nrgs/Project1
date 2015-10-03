@@ -9,6 +9,7 @@
 #include <iostream>
 
 
+
 //function to load image of any format
 SDL_Surface* loadImage(std::string path)
 {
@@ -85,10 +86,18 @@ public:
 };
 
 
+//Declaing tff font
 
+TTF_Font* font;
+SDL_Color textColor = { 255, 255, 255, 255 }; // black
+SDL_Color backgroundColor = {255, 255, 255, 255 }; // white
+
+SDL_Surface * scoreBoard;
+SDL_Rect scoreBoardRect;
 
 int main(int argc, char* argv[])
 {
+   TTF_Init();
     //Constant values for screen dimentions
     const int SCREEN_WIDTH = 640; 
     const int SCREEN_HEIGHT = 480;
@@ -101,6 +110,14 @@ int main(int argc, char* argv[])
     SDL_Surface *gameOverImage = NULL;
     SDL_Renderer* renderer = NULL;
     const Uint8 * key = SDL_GetKeyboardState(NULL);
+    
+    font = TTF_OpenFont("OpenSans-Bold.ttf", 24);
+    
+    scoreBoardRect.x = 0; 
+    scoreBoardRect.y = 0;
+    scoreBoardRect.h = 100;
+    scoreBoardRect.w = 100;
+
 
     //Create unicorn object 
     Unicorn unicorn; 
@@ -113,6 +130,8 @@ int main(int argc, char* argv[])
     const int CELL_WIDTH = 32;
     const int CELL_HEIGHT = 24;
     const int game_speed = 6;
+
+    int score = 0; 
 
     //Generating random
     srand(time(NULL));
@@ -166,12 +185,13 @@ int main(int argc, char* argv[])
         //While game is running
         while(!quit)
         {   
-            
             int totalTime, delta, oldTotalTime;
             totalTime = SDL_GetTicks();
             delta = totalTime - oldTotalTime;
             oldTotalTime = totalTime;
 
+
+            score ++;
             //Keyboard
              if(SDL_PollEvent(&event) != 0)
             {
@@ -277,6 +297,16 @@ int main(int argc, char* argv[])
             }
             SDL_BlitSurface(unicorn.surface, NULL, screen, &unicorn.rect); 
             
+
+
+            //Display score
+            scoreBoard = TTF_RenderText_Solid(font, std::to_string(score).c_str(), textColor);
+            
+            SDL_BlitSurface(scoreBoard, NULL, screen, &scoreBoardRect);
+            
+        //scoreObj.surface = TTF_RenderText_Solid(font, std::to_string(score).c_str(), score_color);
+
+
             //Update the surface
             SDL_UpdateWindowSurface(window);
   
