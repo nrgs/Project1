@@ -20,15 +20,24 @@ SDL_Surface* loadImage(std::string path)
 class Unicorn
 {
 public:
+    //The dimention of the unicorn
+    static const int unicorn_width = 20;
+    static const int unicorn_height = 20;
+    //Velocity of the unicorn
+    static const int unicorn_vel = 10;
+
     Unicorn()
         : surface(loadImage("images/unicorn_m.png")), xSpeed(0), ySpeed(0)
     {
        rect.x = 140;
        rect.y = 140;
- 
-    }
+       mCollider.w = unicorn_width;
+       mCollider.h = unicorn_height;
+     }
+
     SDL_Surface * surface;
     SDL_Rect rect; 
+    SDL_Rect mCollider;
     int xSpeed;
     int ySpeed;    
 };
@@ -49,6 +58,35 @@ public:
     bool skipCell;  
 };
 
+//Box collision detector [Took from LazyFoo]
+bool checkCollision(SDL_Rect a, SDL_Rect b)
+{
+     //The sides of the rectangles 
+    int leftA, leftB; 
+    int rightA, rightB;
+    int topA, topB; 
+    int bottomA, bottomB;
+
+    //Calculate the sides of rect A 
+    leftA = a.x; 
+    rightA = a.x + a.w; 
+    topA = a.y; 
+    bottomA = a.y + a.h;
+
+     //Calculate the sides of rect B 
+    leftB = b.x; 
+    rightB = b.x + b.w; 
+    topB = b.y; 
+    bottomB = b.y + b.h;
+
+     //If any of the sides from A are outside of B 
+    if( bottomA <= topB ) { return false; }
+    if( topA >= bottomB ) { return false; }
+    if( rightA <= leftB ) { return false; }
+    if( leftA >= rightB ) { return false; }
+    //If none of the sides from A are outside B 
+    return true;
+}
 
 int main(int argc, char* argv[])
 {
@@ -67,17 +105,21 @@ int main(int argc, char* argv[])
     //Create unicorn object 
     Unicorn unicorn; 
 
+    bool collision = false;
+
+
+
     //Constatant values for labirint cell dimentions
     const int CELL_WIDTH = 32;
     const int CELL_HEIGHT = 24;
-    const int game_speed = 4;
+    const int game_speed = 6;
 
     //Generating random
     srand(time(NULL));
     //Create a labirint object as 2D array
     Labirint labirint[CELL_WIDTH][CELL_HEIGHT];
 
-    //to cut out
+    //fills screen with stars
     for (int i = 0; i < CELL_WIDTH; i++)
     {
         for (int j = 0; j < CELL_HEIGHT; j++)
@@ -87,6 +129,7 @@ int main(int argc, char* argv[])
 
         }
     }
+
     int blankCellpositionTop = 6;
     int blankCellpositionBottom = 15;
     for (int i = 0; i < 32; i++)
@@ -96,15 +139,11 @@ int main(int argc, char* argv[])
 
             labirint[i][j].skipCell = true; 
             
-        
         }
        
        //lame labyrinth 
         blankCellpositionTop = rand()% + 6;
         blankCellpositionBottom = blankCellpositionTop + 10;
-
-             
-
     }
     
 
@@ -125,11 +164,14 @@ int main(int argc, char* argv[])
 
         //While game is running
         while(!quit)
-        {
-            int totalTime, timeSinceLastLoop, oldTotalTime;
+        {   
+            
+            int totalTime, delta, oldTotalTime;
             totalTime = SDL_GetTicks();
-            timeSinceLastLoop = totalTime - oldTotalTime;
+            delta = totalTime - oldTotalTime;
             oldTotalTime = totalTime;
+
+            //Keyboard
              if(SDL_PollEvent(&event) != 0)
             {
                
@@ -140,30 +182,42 @@ int main(int argc, char* argv[])
 
                 if(key[SDL_SCANCODE_LEFT])
                 {
-                    unicorn.rect.x -=10;
+                    unicorn.xSpeed = -2;
+                    unicorn.rect.x += unicorn.xSpeed * delta * 0.5;
                 }
                  if(key[SDL_SCANCODE_RIGHT])
                 {
-                    unicorn.rect.x += 10;
+                    unicorn.xSpeed = 2;
+                    unicorn.rect.x += unicorn.xSpeed * delta * 0.5;
                 }
                  if(key[SDL_SCANCODE_UP])
                 {
-                    unicorn.rect.y -= 10;
+                  // if((unicorn.rect.y < 0) || (unicorn.rect.y + unicorn.unicorn_width > SCREEN_HEIGHT) || (collision))
+                  //   {
+                  //       //Move Back
+                  //       unicorn.rect.y += unicorn.ySpeed;
+                  //       unicorn.mCollider.y = unicorn.rect.y;
+                  //   } 
+                    unicorn.ySpeed = -2;
+                    unicorn.rect.y += unicorn.ySpeed * delta * 0.5;
+                    //unicorn. mCollider.y = unicorn.rect.y;
                 }
                  if(key[SDL_SCANCODE_DOWN])
                 {   
-                    unicorn.rect.y += 10;
+                    unicorn.ySpeed = 2;
+                    unicorn.rect.y += unicorn.ySpeed * delta * 0.5;
+        
                 }
 
             }
 
-           //Move background with David's help
+            
+             //Move background with David's help
             for (int i = 0; i < CELL_WIDTH; i++)
             {
-               
                 for (int j = 0; j < CELL_HEIGHT; j++)
                 {
-                    labirint[i][j].rect.x -= timeSinceLastLoop/game_speed;
+                    labirint[i][j].rect.x -= delta/game_speed;
                 }
             }
 
@@ -180,18 +234,13 @@ int main(int argc, char* argv[])
                 {
                     for (int j = 0; j < CELL_HEIGHT; ++j)
                     {
-
                          labirint[i][j].rect.x = rightMostColumn;
                      }
                 }
             }
 
 
-
-
-      
-            
-            //Apply the images
+            //Apply the star images
             SDL_BlitSurface(backgroundImage, NULL, screen, NULL); 
              for (int i = 0; i < CELL_WIDTH; i++)
             {
@@ -199,6 +248,8 @@ int main(int argc, char* argv[])
                 {
                     if(labirint[i][j].skipCell == false)
                     {
+                        collision = checkCollision(unicorn.mCollider, labirint[0][j].rect);
+
 
                         SDL_BlitSurface(labirint[i][j].surface, NULL, screen, &labirint[i][j].rect); 
                     }
