@@ -20,19 +20,14 @@ SDL_Surface* loadImage(std::string path)
 class Unicorn
 {
 public:
-    //The dimention of the unicorn
-    static const int unicorn_width = 25;
-    static const int unicorn_height = 25;
     //Velocity of the unicorn
     static const int unicorn_vel = 10;
 
     Unicorn()
-        : surface(loadImage("images/unicorn_m.png")), xSpeed(0), ySpeed(0)
+        : surface(loadImage("images/unicorn.png")), xSpeed(0), ySpeed(0)
     {
-       rect.x = 140;
-       rect.y = 140;
-       mCollider.w = unicorn_width;
-       mCollider.h = unicorn_height;
+       rect.x = 100;
+       rect.y = 140;;
      }
 
     SDL_Surface * surface;
@@ -100,6 +95,7 @@ int main(int argc, char* argv[])
     SDL_Surface *screen = NULL;
     SDL_Window *window = NULL;
     SDL_Surface *backgroundImage = NULL;
+    SDL_Surface *gameOverImage = NULL;
     SDL_Renderer* renderer = NULL;
     const Uint8 * key = SDL_GetKeyboardState(NULL);
 
@@ -131,8 +127,8 @@ int main(int argc, char* argv[])
         }
     }
 
-    int blankCellpositionTop = 6;
-    int blankCellpositionBottom = 15;
+    int blankCellpositionTop = 3;
+    int blankCellpositionBottom = 18;
     for (int i = 0; i < 32; i++)
     {
         for(int j = blankCellpositionTop; j < blankCellpositionBottom; j++)
@@ -184,73 +180,28 @@ int main(int argc, char* argv[])
 
                 if(key[SDL_SCANCODE_LEFT])
                 {
-                    //  for (int i = 0; i < CELL_WIDTH; i++)
-                    // {
-                    //     for (int j = 0; j < CELL_HEIGHT; j++)
-                    //     {
-                    //         if(labirint[i][j].skipCell == false)
-                    //         {
-                    //             if((unicorn.rect.x < 0) || (unicorn.rect.x + unicorn.unicorn_width > SCREEN_WIDTH) || checkCollision(unicorn.mCollider, labirint[i][j].rect, i, j))
-                    //              //Move Back
-                    //             unicorn.rect.x -= unicorn.xSpeed * delta * 0.5;
-                    //             unicorn.mCollider.x = unicorn.rect.x;
-                    //         } 
-                    //     }
-                    // }
                     unicorn.xSpeed = -1;
-                    unicorn.rect.x += unicorn.xSpeed * delta / 3;
+                    unicorn.rect.x += unicorn.xSpeed * delta * 0.5;
                 }
                  if(key[SDL_SCANCODE_RIGHT])
                 {
-                    //  for (int i = 0; i < CELL_WIDTH; i++)
-                    // {
-                    //     for (int j = 0; j < CELL_HEIGHT; j++)
-                    //     {
-                    //         if(labirint[i][j].skipCell == false)
-                    //         {
-                    //             if((unicorn.rect.x < 0) || (unicorn.rect.x + unicorn.unicorn_width > SCREEN_WIDTH) || checkCollision(unicorn.mCollider, labirint[i][j].rect))
-                    //              //Move Back
-                    //             unicorn.rect.x -= unicorn.xSpeed * delta * 0.5;
-                    //             unicorn.mCollider.x = unicorn.rect.x;
-                                
-                    //         } 
-                    //     }
-                    // }
+                    
                     unicorn.xSpeed = 1;
-                    unicorn.rect.x += unicorn.xSpeed * delta / 3;
-                    unicorn.mCollider.x = unicorn.rect.x;
+                    unicorn.rect.x += unicorn.xSpeed * delta * 0.5;
+
                 }
 
                  if(key[SDL_SCANCODE_UP])
                 {
-                    for (int i = 0; i < CELL_WIDTH; i++)
-                    {
-                        for (int j = 0; j < CELL_HEIGHT; j++)
-                        {
-                            if(labirint[i][j].skipCell == false)
-                            {
-                                if((unicorn.rect.y < 0) || (unicorn.rect.y + unicorn.unicorn_height > SCREEN_HEIGHT) || checkCollision(unicorn.mCollider, labirint[i][j].rect))
-                                 //Move Back
-                               unicorn.rect.y -= unicorn.ySpeed * delta / 3;
-                                unicorn.mCollider.y = unicorn.rect.y;
-                                std::cout<< "Collision happening"<< std::endl;
-                               // quit = true;
-                                //SDL_BlitSurface(labirint[i][j].surface, NULL, screen, &labirint[i][j].rect); 
-                                //SDL_BlitSurface(labirint[i][j].surface, NULL, screen, &labirint[i][j].rect);
-                                
-                                
-                            } 
-                        }
-                    }
 
                     unicorn.ySpeed = -1;
-                    unicorn.rect.y += unicorn.ySpeed * delta / 3;
-                    unicorn. mCollider.y = unicorn.rect.y;
+                    unicorn.rect.y += unicorn.ySpeed * delta * 0.5;
+                  
                 }
                  if(key[SDL_SCANCODE_DOWN])
                 {   
                     unicorn.ySpeed = 1;
-                    unicorn.rect.y += unicorn.ySpeed * delta / 3;
+                    unicorn.rect.y += unicorn.ySpeed * delta * 0.5;
         
                 }
 
@@ -262,7 +213,7 @@ int main(int argc, char* argv[])
             {
                 for (int j = 0; j < CELL_HEIGHT; j++)
                 {
-                    labirint[i][j].rect.x -= delta / 3;
+                    labirint[i][j].rect.x -= delta / 5;
                 }
             }
 
@@ -284,6 +235,30 @@ int main(int argc, char* argv[])
                 }
             }
 
+            //Check Collision
+            for (int i = 0; i < CELL_WIDTH; i++)
+                    {
+                        for (int j = 0; j < CELL_HEIGHT; j++)
+                        {
+                            if(labirint[i][j].skipCell == false)
+                            {
+                                if(checkCollision(unicorn.rect, labirint[i][j].rect))
+                                {
+                                    SDL_Rect gameOver;
+                                    gameOver.x = 200;
+                                    gameOver.y = 200;
+                                   //poping out game over images
+                                    backgroundImage = loadImage("images/background_sm.png");
+                                    gameOverImage = loadImage("images/gameOver.png");
+                                    SDL_BlitSurface(backgroundImage, NULL, screen, NULL); 
+                                    SDL_BlitSurface(gameOverImage, NULL, screen, &gameOver); 
+                                    SDL_UpdateWindowSurface(window);
+                                    SDL_Delay(3000);
+                                    SDL_Quit();
+                                } 
+                            } 
+                        }
+                    }
 
             //Apply the star images
             SDL_BlitSurface(backgroundImage, NULL, screen, NULL); 
@@ -305,7 +280,7 @@ int main(int argc, char* argv[])
   
             
         }
-
+        SDL_FreeSurface(gameOverImage);
         SDL_FreeSurface(backgroundImage);
         SDL_FreeSurface(unicorn.surface);
     }
