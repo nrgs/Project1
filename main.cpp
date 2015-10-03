@@ -9,6 +9,9 @@
 #include <iostream>
 
 
+ //Constant values for screen dimentions
+const int SCREEN_WIDTH = 640; 
+const int SCREEN_HEIGHT = 480;
 
 //function to load image of any format
 SDL_Surface* loadImage(std::string path)
@@ -52,10 +55,7 @@ bool checkCollision(SDL_Rect a, SDL_Rect b)
 class Unicorn
 {
 public:
-    //Velocity of the unicorn
-    static const int unicorn_vel = 10;
-
-    Unicorn()
+     Unicorn()
         : surface(loadImage("images/unicorn.png")), xSpeed(0), ySpeed(0)
     {
        rect.x = 100;
@@ -64,7 +64,7 @@ public:
 
     SDL_Surface * surface;
     SDL_Rect rect; 
-    SDL_Rect mCollider;
+   
     int xSpeed;
     int ySpeed;    
 };
@@ -88,17 +88,17 @@ public:
 //Declaing tff font
 
 TTF_Font* font;
-SDL_Color textColor = { 255, 255, 255, 255 }; // black
-SDL_Color backgroundColor = {255, 255, 255, 255 }; // white
+//white color for text
+SDL_Color textColor = { 255, 255, 255, 255 };
 SDL_Surface * scoreBoard;
 SDL_Rect scoreBoardRect;
 
 int main(int argc, char* argv[])
 {
    TTF_Init();
-    //Constant values for screen dimentions
-    const int SCREEN_WIDTH = 640; 
-    const int SCREEN_HEIGHT = 480;
+
+   //Generating random
+    srand(time(NULL));
 
     //initializing SDL variables
     SDL_Surface *screen = NULL;
@@ -110,11 +110,13 @@ int main(int argc, char* argv[])
     
     font = TTF_OpenFont("OpenSans-Bold.ttf", 24);
     
+    //Position for the score:
     scoreBoardRect.x = 0; 
     scoreBoardRect.y = 0;
     scoreBoardRect.h = 100;
     scoreBoardRect.w = 100;
 
+     int score = 0; 
 
     //Create unicorn object 
     Unicorn unicorn; 
@@ -124,14 +126,11 @@ int main(int argc, char* argv[])
     const int CELL_HEIGHT = 24;
     const int game_speed = 6;
 
-    int score = 0; 
-
-    //Generating random
-    srand(time(NULL));
+    
     //Create a labirint object as 2D array
     Labirint labirint[CELL_WIDTH][CELL_HEIGHT];
 
-    //fills screen with stars
+    //create a grid of 20x20 cells
     for (int i = 0; i < CELL_WIDTH; i++)
     {
         for (int j = 0; j < CELL_HEIGHT; j++)
@@ -142,8 +141,8 @@ int main(int argc, char* argv[])
         }
     }
 
-    //Remove stars randomly in the range of 3 to 18
-    int blankCellpositionTop = 3;
+    //Remove stars randomly in the range of 5 to 18
+    int blankCellpositionTop = 5;
     int blankCellpositionBottom = 18;
     for (int i = 0; i < 32; i++)
     {
@@ -179,8 +178,6 @@ int main(int argc, char* argv[])
             delta = totalTime - oldTotalTime;
             oldTotalTime = totalTime;
 
-
-            score ++;
             //Keyboard
              if(SDL_PollEvent(&event) != 0)
             {
@@ -245,28 +242,40 @@ int main(int argc, char* argv[])
 
             //Check Collision
             for (int i = 0; i < CELL_WIDTH; i++)
+            {
+                for (int j = 0; j < CELL_HEIGHT; j++)
+                {
+                    if(labirint[i][j].skipCell == false)
                     {
-                        for (int j = 0; j < CELL_HEIGHT; j++)
+                        if(checkCollision(unicorn.rect, labirint[i][j].rect))
                         {
-                            if(labirint[i][j].skipCell == false)
-                            {
-                                if(checkCollision(unicorn.rect, labirint[i][j].rect))
-                                {
-                                    SDL_Rect gameOver;
-                                    gameOver.x = 200;
-                                    gameOver.y = 200;
-                                   //poping out game over images
-                                    backgroundImage = loadImage("images/background_sm.png");
-                                    gameOverImage = loadImage("images/gameOver.png");
-                                    SDL_BlitSurface(backgroundImage, NULL, screen, NULL); 
-                                    SDL_BlitSurface(gameOverImage, NULL, screen, &gameOver); 
-                                    SDL_UpdateWindowSurface(window);
-                                    SDL_Delay(3000);
-                                    SDL_Quit();
-                                } 
-                            } 
-                        }
-                    }
+                            //setting position for game over rect
+                            SDL_Rect gameOver;
+                            gameOver.x = 200;
+                            gameOver.y = 200;
+
+                           //poping out game over images
+                            backgroundImage = loadImage("images/background_sm.png");
+                            gameOverImage = loadImage("images/gameOver.png");
+                            SDL_BlitSurface(backgroundImage, NULL, screen, NULL); 
+                            SDL_BlitSurface(gameOverImage, NULL, screen, &gameOver); 
+                            std::string score_displayed = "Final Score: " + std::to_string(score);
+
+                            //Display score
+                            scoreBoard = TTF_RenderText_Solid(font, score_displayed.c_str(), textColor);
+                            scoreBoardRect.x = 200;
+                            scoreBoardRect.y = 320;
+                            SDL_BlitSurface(scoreBoard, NULL, screen, &scoreBoardRect);
+                            
+                            SDL_UpdateWindowSurface(window);
+                            SDL_Delay(3000);
+                            quit = true;
+                            SDL_Quit();
+                        } 
+                    } 
+                }
+            }
+            score ++;
 
             //Apply the star images
             SDL_BlitSurface(backgroundImage, NULL, screen, NULL); 
@@ -281,18 +290,14 @@ int main(int argc, char* argv[])
                 }
             }
             //Apply the unicorn image
-            SDL_BlitSurface(unicorn.surface, NULL, screen, &unicorn.rect); 
+            SDL_BlitSurface(unicorn.surface, NULL, screen, &unicorn.rect);
 
-            
-
-
+            std::string score_displayed = "Score: " + std::to_string(score);
             //Display score
-            scoreBoard = TTF_RenderText_Solid(font, std::to_string(score).c_str(), textColor);
+            scoreBoard = TTF_RenderText_Solid(font, score_displayed.c_str(), textColor);
             
             SDL_BlitSurface(scoreBoard, NULL, screen, &scoreBoardRect);
             
-        //scoreObj.surface = TTF_RenderText_Solid(font, std::to_string(score).c_str(), score_color);
-
             //Update the surface
             SDL_UpdateWindowSurface(window);    
         }
