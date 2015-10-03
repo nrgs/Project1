@@ -37,8 +37,7 @@ public:
     int ySpeed;    
 };
 
-
-//Creating a class for 
+//Creating a class for Labirint
 class Labirint
 {
 public:
@@ -56,7 +55,6 @@ public:
 //Box collision detector [Took from LazyFoo]
 bool checkCollision(SDL_Rect a, SDL_Rect b)
 {
-   
      //The sides of the rectangles 
     int leftA, leftB; 
     int rightA, rightB;
@@ -80,6 +78,7 @@ bool checkCollision(SDL_Rect a, SDL_Rect b)
     if( topA >= bottomB ) { return false; }
     if( rightA <= leftB ) { return false; }
     if( leftA >= rightB ) { return false; }
+
     //If none of the sides from A are outside B 
     return true;
 }
@@ -89,7 +88,6 @@ int main(int argc, char* argv[])
     //Constant values for screen dimentions
     const int SCREEN_WIDTH = 640; 
     const int SCREEN_HEIGHT = 480;
-
 
     //initializing SDL variables
     SDL_Surface *screen = NULL;
@@ -101,10 +99,6 @@ int main(int argc, char* argv[])
 
     //Create unicorn object 
     Unicorn unicorn; 
-
-    bool collision = false;
-
-
 
     //Constatant values for labirint cell dimentions
     const int CELL_WIDTH = 32;
@@ -127,31 +121,25 @@ int main(int argc, char* argv[])
         }
     }
 
+    //Remove stars randomly in the range of 3 to 18
     int blankCellpositionTop = 3;
     int blankCellpositionBottom = 18;
     for (int i = 0; i < 32; i++)
     {
         for(int j = blankCellpositionTop; j < blankCellpositionBottom; j++)
         {
-
-            labirint[i][j].skipCell = true; 
-            
+            labirint[i][j].skipCell = true;     
         }
        
        //lame labyrinth 
         blankCellpositionTop = rand()% + 6;
         blankCellpositionBottom = blankCellpositionTop + 10;
     }
-    
-
     SDL_Init(SDL_INIT_VIDEO); 
 
     // create the window 
     window = SDL_CreateWindow("Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
-     screen = SDL_GetWindowSurface(window);
-
-
-
+    screen = SDL_GetWindowSurface(window);
 
     bool quit = false;
     if(window != NULL)
@@ -163,7 +151,7 @@ int main(int argc, char* argv[])
         //While game is running
         while(!quit)
         {   
-            
+            //Calculating delta
             int totalTime, delta, oldTotalTime;
             totalTime = SDL_GetTicks();
             delta = totalTime - oldTotalTime;
@@ -172,7 +160,6 @@ int main(int argc, char* argv[])
             //Keyboard
              if(SDL_PollEvent(&event) != 0)
             {
-               
                 if(event.type == SDL_QUIT)
                 {
                     quit = true;
@@ -188,26 +175,23 @@ int main(int argc, char* argv[])
                     
                     unicorn.xSpeed = 1;
                     unicorn.rect.x += unicorn.xSpeed * delta * 0.5;
-
                 }
 
                  if(key[SDL_SCANCODE_UP])
                 {
 
                     unicorn.ySpeed = -1;
-                    unicorn.rect.y += unicorn.ySpeed * delta * 0.5;
-                  
+                    unicorn.rect.y += unicorn.ySpeed * delta * 0.5;  
                 }
+
                  if(key[SDL_SCANCODE_DOWN])
                 {   
                     unicorn.ySpeed = 1;
                     unicorn.rect.y += unicorn.ySpeed * delta * 0.5;
         
                 }
-
             }
 
-            
              //Move background with David's help
             for (int i = 0; i < CELL_WIDTH; i++)
             {
@@ -272,18 +256,18 @@ int main(int argc, char* argv[])
                     }
                 }
             }
+            //Apply the unicorn image
             SDL_BlitSurface(unicorn.surface, NULL, screen, &unicorn.rect); 
         
-            
             //Update the surface
-            SDL_UpdateWindowSurface(window);
-  
-            
+            SDL_UpdateWindowSurface(window);    
         }
+
         SDL_FreeSurface(gameOverImage);
         SDL_FreeSurface(backgroundImage);
         SDL_FreeSurface(unicorn.surface);
     }
+
     SDL_DestroyWindow(window);
     SDL_Quit();
     return 0;
