@@ -280,22 +280,7 @@ int main(int argc, char* argv[])
                             
                             SDL_UpdateWindowSurface(window);
                             SDL_Delay(3000);
-                    
-                            SDL_FreeSurface(gameOverImage);
-                            SDL_FreeSurface(backgroundImage);
-                            SDL_FreeSurface(unicorn.surface);
-
-                            for (int i = 0; i < CELL_WIDTH; i++)
-                            {
-                                for (int j = 0; j < CELL_HEIGHT; j++)
-                                {
-                                    SDL_FreeSurface(labirint[i][j].surface);
-                                    
-                                }
-                            }
-                            TTF_Quit();
-                            SDL_Quit();
-
+                            quit = true;                 
                             break;
 
                         } 
