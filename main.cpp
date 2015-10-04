@@ -293,9 +293,6 @@ int main(int argc, char* argv[])
                                     
                                 }
                             }
-
-
-                          
                             TTF_Quit();
                             SDL_Quit();
 
@@ -339,18 +336,12 @@ int main(int argc, char* argv[])
         gameOverImage = NULL;
         SDL_FreeSurface(backgroundImage);
         backgroundImage = NULL;
-        //SDL_FreeSurface(unicorn->surface);
-        //unicorn = NULL;
-        //SDL_FreeSurface(scoreBoard->surface);
-        //scoreBoard->surface = NULL;
 
         for (int i = 0; i < CELL_WIDTH; i++)
         {
             for (int j = 0; j < CELL_HEIGHT; j++)
             {
                 SDL_FreeSurface(labirint[i][j].surface);
-                //labirint[i][j].surface = NULL;
-                
             }
         }
     }

@@ -15,6 +15,7 @@ Second, install following libraries:
 + SDL2_ttf using:
 *sudo apt-get install libsdl2-ttf-2.0-0* 
 *sudo apt-get install libsdl2-ttf-dev* 
+
 Third, once libraries are installed, put following commands into terminal:
 *make
 *./main
