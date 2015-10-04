@@ -188,7 +188,6 @@ int main(int argc, char* argv[])
             delta = totalTime - oldTotalTime;
             oldTotalTime = totalTime;
 
-
             //Keyboard
              if(SDL_PollEvent(&event) != 0)
             {
@@ -282,7 +281,7 @@ int main(int argc, char* argv[])
                             SDL_UpdateWindowSurface(window);
                             SDL_Delay(3000);
                             quit = true;
-                            SDL_Quit();
+                            break;
                         } 
                     } 
                 }
