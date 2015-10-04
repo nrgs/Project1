@@ -1,4 +1,4 @@
-
+//By Narges Zare and Viktorria Lavrenchenko
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -86,7 +86,6 @@ public:
 
 
 //Declaing tff font
-
 TTF_Font* font;
 //white color for text
 SDL_Color textColor = { 255, 255, 255, 255 };
@@ -105,6 +104,7 @@ int main(int argc, char* argv[])
     SDL_Window *window = NULL;
     SDL_Surface *backgroundImage = NULL;
     SDL_Surface *gameOverImage = NULL;
+    SDL_Surface *firstImage = NULL;
     SDL_Renderer* renderer = NULL;
     const Uint8 * key = SDL_GetKeyboardState(NULL);
     
@@ -161,9 +161,15 @@ int main(int argc, char* argv[])
     window = SDL_CreateWindow("Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
     screen = SDL_GetWindowSurface(window);
 
+    
+
+
     bool quit = false;
     if(window != NULL)
     {
+        
+      
+
         //Load Background
         backgroundImage = IMG_Load("images/background_sm.png"); 
         SDL_Event event;
@@ -172,11 +178,16 @@ int main(int argc, char* argv[])
         while(!quit)
         {   
 
+            //Popping out first page of the game
+            // firstImage = loadImage("images/firstPage.png");
+            // SDL_BlitSurface(firstImage, NULL, screen, NULL); 
+            
             //Calculating delta
             int totalTime, delta, oldTotalTime;
             totalTime = SDL_GetTicks();
             delta = totalTime - oldTotalTime;
             oldTotalTime = totalTime;
+
 
             //Keyboard
              if(SDL_PollEvent(&event) != 0)
@@ -255,7 +266,8 @@ int main(int argc, char* argv[])
                             gameOver.y = 200;
 
                            //poping out game over images
-                            backgroundImage = loadImage("images/background_sm.png");
+                            
+
                             gameOverImage = loadImage("images/gameOver.png");
                             SDL_BlitSurface(backgroundImage, NULL, screen, NULL); 
                             SDL_BlitSurface(gameOverImage, NULL, screen, &gameOver); 
@@ -275,7 +287,10 @@ int main(int argc, char* argv[])
                     } 
                 }
             }
-            score ++;
+
+            //Calculating score
+            int ConverToSecond = oldTotalTime / 30;
+            score = 10 * ConverToSecond;
 
             //Apply the star images
             SDL_BlitSurface(backgroundImage, NULL, screen, NULL); 
