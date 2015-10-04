@@ -108,7 +108,7 @@ int main(int argc, char* argv[])
     SDL_Renderer* renderer = NULL;
     const Uint8 * key = SDL_GetKeyboardState(NULL);
     
-    font = TTF_OpenFont("OpenSans-Bold.ttf", 24);
+    font = TTF_OpenFont("fonts/OpenSans-Bold.ttf", 24);
     
     //Position for the score:
     scoreBoardRect.x = 0; 
@@ -223,7 +223,7 @@ int main(int argc, char* argv[])
                 }
             }
 
-             //Move background with David's help
+             //Move background: based on discussion with David
             for (int i = 0; i < CELL_WIDTH; i++)
             {
                 for (int j = 0; j < CELL_HEIGHT; j++)
