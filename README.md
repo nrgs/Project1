@@ -17,8 +17,8 @@ Second, install following libraries:
 *sudo apt-get install libsdl2-ttf-dev* 
 
 Third, once libraries are installed, put following commands into terminal:
-*make
-*./main
+*make*
+*./main*
 
 How to play game:
 -----------------
