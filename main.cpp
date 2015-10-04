@@ -270,6 +270,22 @@ int main(int argc, char* argv[])
                             SDL_UpdateWindowSurface(window);
                             SDL_Delay(3000);
                             quit = true;
+                            SDL_FreeSurface(gameOverImage);
+                            SDL_FreeSurface(backgroundImage);
+                            SDL_FreeSurface(unicorn.surface);
+
+                            for (int i = 0; i < CELL_WIDTH; i++)
+                            {
+                                for (int j = 0; j < CELL_HEIGHT; j++)
+                                {
+                                    SDL_FreeSurface(labirint[i][j].surface);
+                                    
+                                }
+                            }
+
+
+                          
+                            TTF_Quit();
                             SDL_Quit();
                         } 
                     } 
@@ -303,11 +319,28 @@ int main(int argc, char* argv[])
         }
 
         SDL_FreeSurface(gameOverImage);
+        gameOverImage = NULL;
         SDL_FreeSurface(backgroundImage);
-        SDL_FreeSurface(unicorn.surface);
+        backgroundImage = NULL;
+        //SDL_FreeSurface(unicorn->surface);
+        //unicorn = NULL;
+        //SDL_FreeSurface(scoreBoard->surface);
+        //scoreBoard->surface = NULL;
+
+        for (int i = 0; i < CELL_WIDTH; i++)
+        {
+            for (int j = 0; j < CELL_HEIGHT; j++)
+            {
+                SDL_FreeSurface(labirint[i][j].surface);
+                //labirint[i][j].surface = NULL;
+                
+            }
+        }
     }
 
     SDL_DestroyWindow(window);
+    window = NULL;
+    TTF_Quit();
     SDL_Quit();
     return 0;
 }
