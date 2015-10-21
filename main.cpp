@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include "SDL_net.h"
 
 
  //Constant values for screen dimentions
